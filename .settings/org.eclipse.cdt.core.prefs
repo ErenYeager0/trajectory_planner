@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.93903642/PATH/delimiter=;
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.93903642/PATH/operation=replace
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.93903642/PATH/value=E\:\\ISGNC-LxWin-Guchen\\ISGNC-LxWin-Guchen\\Acontis\\MinGW\\MinGw\\bin;E\:\\ISGNC-LxWin-Guchen\\ISGNC-LxWin-Guchen\\Acontis\\MinGW\\MinGw\\msys\\1.0\\bin
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.93903642/append=true
+environment/project/cdt.managedbuild.config.gnu.cross.exe.debug.93903642/appendContributed=true
