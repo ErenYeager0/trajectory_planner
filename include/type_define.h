@@ -2,16 +2,23 @@
 #ifndef TYPE_DEFINE
 #define TYPE_DEFINE
 
-typedef void* (*lpCallback)(void*);
+typedef void* (*lpCallback)(void*,...);
+#ifdef PRINT_DEBUG
+
+#else
+
+#endif
 
 #define MAX_AXIS_PER_GROUP    6
 #define MAX_GROUP_PER_CNANNEL 2
+#define JT_EPS 0.0005
 
 typedef struct aixs_info
 {
 	unsigned char axis_id;
 	unsigned char ctrl_mod;
 	unsigned char plan_mod; //T or S
+	unsigned char move_flag;//0--stop,1--positive, -1--negative
 
 	double max_vel;
 	double max_acc;
@@ -19,13 +26,22 @@ typedef struct aixs_info
 	double max_pos;
 	double min_pos;
 
-	double target_pos;
-	double target_vel;
-	double target_acc;
+	double target_pos; //du
+	double target_vel; //du/s
+	double target_acc; //du/s^2
 
-	double current_pos;
-	double current_vel;
-	double current_acc;
+	double start_pos;
+	double start_vel;
+	double start_acc;
+
+	double traj_pos; //du
+	double traj_vel; //du/s
+	double traj_acc; //du/s^2
+
+	double delta_pos;
+
+	long plan_timer[7];
+	//long counter;
 }AXIS_INFO;
 
 typedef struct aixs_group_info

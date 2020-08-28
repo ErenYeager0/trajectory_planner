@@ -8,6 +8,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include src/main_task/subdir.mk
 -include src/group_planner/subdir.mk
 -include src/axis_planner/subdir.mk
 -include subdir.mk
