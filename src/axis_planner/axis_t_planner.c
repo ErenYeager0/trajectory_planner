@@ -144,9 +144,9 @@ static char axis_acc_handle_unit(AXIS_INFO *p_axis_info, long count)
 {
 	double percent_delta = 0.0;
 
-    si = si + (double)count/p_axis_info->plan_timer[0];
-    percent_delta = 1 - si/p_axis_info->plan_timer[1];
-    p_axis_info->traj_pos = p_axis_info->target_pos - p_axis_info->delta_pos*percent_delta;
+	si = si + (double)count/p_axis_info->plan_timer[0];
+	percent_delta = 1 - si/p_axis_info->plan_timer[1];
+	p_axis_info->traj_pos = p_axis_info->target_pos - p_axis_info->delta_pos*percent_delta;
 
 	return 0;
 }
