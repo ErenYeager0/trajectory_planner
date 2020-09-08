@@ -15,4 +15,3 @@ typedef struct
 	lpCallback p_handle;
 }GROUP_PLANNER_UNIT;
 
-void cartesian_line_planner_test();

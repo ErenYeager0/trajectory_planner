@@ -26,7 +26,7 @@ const lpCallback cartesian_line_t_planner[] = {
 		cartesian_line_pause_handle_unit
 };
 
-void cartesian_line_planner_test()
+void cartesian_line_planner_test_one_seg()
 {
 	AXIS_GROUP_INFO axis_group_test;
 	long count;
@@ -124,6 +124,11 @@ void cartesian_line_planner_test()
 
 }
 
+void cartesian_line_planner_test_two_seg_contour()
+{
+
+}
+
 static char cartesian_line_init_handle_unit(AXIS_GROUP_INFO *p_axis_group_info)
 {
 	double delta_abs = 0.0;
@@ -141,13 +146,12 @@ static char cartesian_line_init_handle_unit(AXIS_GROUP_INFO *p_axis_group_info)
 	double z_dis, z_dis_square;
 
 
-	//FIXME:why power function is unreference????
 	x_dis = p_axis_group_info->target_pos.trans.x - p_axis_group_info->start_pos.trans.x;
 	y_dis = p_axis_group_info->target_pos.trans.y - p_axis_group_info->start_pos.trans.y;
 	z_dis = p_axis_group_info->target_pos.trans.z - p_axis_group_info->start_pos.trans.z;
-	x_dis_square = x_dis*x_dis;
-	y_dis_square = y_dis*y_dis;
-	z_dis_square = z_dis*z_dis;
+	x_dis_square = pow(x_dis, 2);
+	y_dis_square = pow(y_dis, 2);
+	z_dis_square = pow(z_dis, 2);
 
 	delta_abs = sqrt(x_dis_square + y_dis_square + z_dis_square);
 
@@ -216,18 +220,20 @@ static char cartesian_line_init_handle_unit(AXIS_GROUP_INFO *p_axis_group_info)
 
 		if (timer > t0max) t0max = timer;
 
-		printf("%d--delta:%f, t0max:%f, tmax:%f\n", i, delta_buf[i], t0max, tmax);
+		//printf("%d--delta:%f, t0max:%f, tmax:%f\n", i, delta_buf[i], t0max, tmax);
 	}
 
 	p_axis_group_info->plan_timer[0] = (long)(t0max + 0.999);
 	p_axis_group_info->plan_timer[1] = (long)(tmax + 0.999);
 	p_axis_group_info->plan_timer[2] = p_axis_group_info->plan_timer[0] + p_axis_group_info->plan_timer[1];
 
+#if 0
 	printf("[%s]t0:%d, t1:%d, t2:%d\n",
 			__func__,
 			p_axis_group_info->plan_timer[0],
 			p_axis_group_info->plan_timer[1],
 			p_axis_group_info->plan_timer[2]);
+#endif
 
 	return 0;
 }

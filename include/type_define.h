@@ -20,6 +20,12 @@ typedef enum rotation_type
 	QUATER,
 }ROTATION_TYPE;
 
+typedef struct vector_2D
+{
+	double x;
+	double y;
+}VECTOR_2D;
+
 typedef struct vector_3D
 {
 	double x;
