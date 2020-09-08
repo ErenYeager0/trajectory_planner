@@ -10,6 +10,7 @@ RM := rm -rf
 -include sources.mk
 -include src/main_task/subdir.mk
 -include src/group_planner/subdir.mk
+-include src/curves_math_function/subdir.mk
 -include src/axis_planner/subdir.mk
 -include subdir.mk
 -include objects.mk
