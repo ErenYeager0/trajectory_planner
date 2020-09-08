@@ -43,6 +43,7 @@ void axis_planner_test()
 
 	for (count = 1; count < axis_test.plan_timer[2]; count++)
 	{
+		//ACC STAGE
 		if (count <= axis_test.plan_timer[0])
 		{
 			if (pause_flag ==1)
@@ -55,6 +56,7 @@ void axis_planner_test()
 			}
 		}
 
+		//VEL SLIP STAGE
 		if ((count > axis_test.plan_timer[0])
 		 && (count <= axis_test.plan_timer[1]))
 		{
@@ -76,6 +78,7 @@ void axis_planner_test()
 
 		}
 
+		//DEC STAGE
 		if ((count > axis_test.plan_timer[1])
 		 && (count < axis_test.plan_timer[2]))
 		{
