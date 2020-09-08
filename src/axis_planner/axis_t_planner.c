@@ -43,6 +43,7 @@ void axis_planner_test()
 
 	for (count = 1; count < axis_test.plan_timer[2]; count++)
 	{
+		//ACC STAGE
 		if (count <= axis_test.plan_timer[0])
 		{
 			if (pause_flag ==1)
@@ -55,6 +56,7 @@ void axis_planner_test()
 			}
 		}
 
+		//VEL SLIP STAGE
 		if ((count > axis_test.plan_timer[0])
 		 && (count <= axis_test.plan_timer[1]))
 		{
@@ -76,6 +78,7 @@ void axis_planner_test()
 
 		}
 
+		//DEC STAGE
 		if ((count > axis_test.plan_timer[1])
 		 && (count < axis_test.plan_timer[2]))
 		{
@@ -144,9 +147,9 @@ static char axis_acc_handle_unit(AXIS_INFO *p_axis_info, long count)
 {
 	double percent_delta = 0.0;
 
-    si = si + (double)count/p_axis_info->plan_timer[0];
-    percent_delta = 1 - si/p_axis_info->plan_timer[1];
-    p_axis_info->traj_pos = p_axis_info->target_pos - p_axis_info->delta_pos*percent_delta;
+	si = si + (double)count/p_axis_info->plan_timer[0];
+	percent_delta = 1 - si/p_axis_info->plan_timer[1];
+	p_axis_info->traj_pos = p_axis_info->target_pos - p_axis_info->delta_pos*percent_delta;
 
 	return 0;
 }
