@@ -14,7 +14,7 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 src/axis_planner \
-src/curves_math_function \
+src/curves_path \
 src/group_planner \
 src/main_task \
 

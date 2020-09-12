@@ -299,3 +299,4 @@ static char cartesian_line_pause_handle_unit(AXIS_GROUP_INFO *p_axis_group_info,
 {
 	return 0;
 }
+
