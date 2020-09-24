@@ -12,6 +12,7 @@ typedef void* (*lpCallback)(void*,...);
 #define MAX_AXIS_PER_GROUP    6
 #define MAX_GROUP_PER_CNANNEL 2
 #define JT_EPS 0.0005
+#define TARGET_POS_MAX        10
 
 typedef enum rotation_type
 {
@@ -89,6 +90,7 @@ typedef struct aixs_group_info
 	unsigned char axis_num;
 	unsigned char move_flag;//0--stop,1--positive, -1--negative
 	ROTATION_TYPE rotation_type;
+	unsigned char current_target;
 
 	lpCallback forward_kinematics;
 	lpCallback inverse_kinematics;
@@ -101,7 +103,7 @@ typedef struct aixs_group_info
 	double max_rot_acc;
 	double max_rot_jerk;
 
-	MATRIX_POSE target_pos; //mm & du
+	MATRIX_POSE target_pos[TARGET_POS_MAX]; //mm & du
 	double target_vel; //mm/s && du/s
 	double target_acc; //mm/s^2 du/s^2
 

@@ -4,14 +4,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/group_planner/cartesian_bezier_contour.c \
 ../src/group_planner/cartesian_line_t_planner.c \
 ../src/group_planner/group_state_machine.c 
 
 OBJS += \
+./src/group_planner/cartesian_bezier_contour.o \
 ./src/group_planner/cartesian_line_t_planner.o \
 ./src/group_planner/group_state_machine.o 
 
 C_DEPS += \
+./src/group_planner/cartesian_bezier_contour.d \
 ./src/group_planner/cartesian_line_t_planner.d \
 ./src/group_planner/group_state_machine.d 
 

@@ -3,6 +3,7 @@
  *
  *  Created on: 2020Äê9ÔÂ7ÈÕ
  *      Author: Eren
+ *      description: this method is used in traditional industry robot, maybe too rigid
  */
 #include <math.h>
 #include <stdio.h>
@@ -41,12 +42,12 @@ void cartesian_line_planner_test_one_seg()
 	axis_group_test.start_pos.pitch   = 0;
 	axis_group_test.start_pos.yaw     = 0;
 
-	axis_group_test.target_pos.trans.x = 100;
-	axis_group_test.target_pos.trans.y = 120;
-	axis_group_test.target_pos.trans.z = 80;
-	axis_group_test.target_pos.roll    = 30;
-	axis_group_test.target_pos.pitch   = 20;
-	axis_group_test.target_pos.yaw     = 10;
+	axis_group_test.target_pos[0].trans.x = 100;
+	axis_group_test.target_pos[0].trans.y = 120;
+	axis_group_test.target_pos[0].trans.z = 80;
+	axis_group_test.target_pos[0].roll    = 30;
+	axis_group_test.target_pos[0].pitch   = 20;
+	axis_group_test.target_pos[0].yaw     = 10;
 
 	axis_group_test.max_dis_acc = 0.2;
 	axis_group_test.max_dis_vel = 5.0;
@@ -146,18 +147,18 @@ static char cartesian_line_init_handle_unit(AXIS_GROUP_INFO *p_axis_group_info)
 	double z_dis, z_dis_square;
 
 
-	x_dis = p_axis_group_info->target_pos.trans.x - p_axis_group_info->start_pos.trans.x;
-	y_dis = p_axis_group_info->target_pos.trans.y - p_axis_group_info->start_pos.trans.y;
-	z_dis = p_axis_group_info->target_pos.trans.z - p_axis_group_info->start_pos.trans.z;
+	x_dis = p_axis_group_info->target_pos[0].trans.x - p_axis_group_info->start_pos.trans.x;
+	y_dis = p_axis_group_info->target_pos[0].trans.y - p_axis_group_info->start_pos.trans.y;
+	z_dis = p_axis_group_info->target_pos[0].trans.z - p_axis_group_info->start_pos.trans.z;
 	x_dis_square = pow(x_dis, 2);
 	y_dis_square = pow(y_dis, 2);
 	z_dis_square = pow(z_dis, 2);
 
 	delta_abs = sqrt(x_dis_square + y_dis_square + z_dis_square);
 
-	p_axis_group_info->delta_pos.roll = p_axis_group_info->target_pos.roll - p_axis_group_info->start_pos.roll;
-	p_axis_group_info->delta_pos.pitch = p_axis_group_info->target_pos.pitch - p_axis_group_info->start_pos.pitch;
-	p_axis_group_info->delta_pos.yaw = p_axis_group_info->target_pos.yaw - p_axis_group_info->start_pos.yaw;
+	p_axis_group_info->delta_pos.roll = p_axis_group_info->target_pos[0].roll - p_axis_group_info->start_pos.roll;
+	p_axis_group_info->delta_pos.pitch = p_axis_group_info->target_pos[0].pitch - p_axis_group_info->start_pos.pitch;
+	p_axis_group_info->delta_pos.yaw = p_axis_group_info->target_pos[0].yaw - p_axis_group_info->start_pos.yaw;
 
 	if (p_axis_group_info->delta_pos.roll< JT_EPS
 	 && p_axis_group_info->delta_pos.pitch < JT_EPS
@@ -245,13 +246,13 @@ static char cartesian_line_acc_handle_unit(AXIS_GROUP_INFO *p_axis_group_info, l
 	si = si + (double)count/p_axis_group_info->plan_timer[0];
 	percent_delta = 1 - si/p_axis_group_info->plan_timer[1];
 
-	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos.trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
-	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos.trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
-	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos.trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
+	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos[0].trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
+	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos[0].trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
+	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos[0].trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
 
-	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos.roll - p_axis_group_info->delta_pos.roll*percent_delta;
-	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos.pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
-	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos.yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
+	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos[0].roll - p_axis_group_info->delta_pos.roll*percent_delta;
+	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos[0].pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
+	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos[0].yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
 
 	return 0;
 }
@@ -264,13 +265,13 @@ static char cartesian_line_slip_handle_unit(AXIS_GROUP_INFO *p_axis_group_info, 
 	si = si + 1;
 	percent_delta = 1 - si/p_axis_group_info->plan_timer[1];
 
-	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos.trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
-	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos.trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
-	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos.trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
+	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos[0].trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
+	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos[0].trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
+	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos[0].trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
 
-	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos.roll - p_axis_group_info->delta_pos.roll*percent_delta;
-	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos.pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
-	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos.yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
+	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos[0].roll - p_axis_group_info->delta_pos.roll*percent_delta;
+	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos[0].pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
+	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos[0].yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
 
 	return 0;
 }
@@ -282,13 +283,13 @@ static char cartesian_line_dec_handle_unit(AXIS_GROUP_INFO *p_axis_group_info, l
 	si = si + 1 - (double)(count - p_axis_group_info->plan_timer[1])/p_axis_group_info->plan_timer[0];
 	percent_delta = 1 - si/p_axis_group_info->plan_timer[1];
 
-	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos.trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
-	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos.trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
-	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos.trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
+	p_axis_group_info->traj_pos.trans.x = p_axis_group_info->target_pos[0].trans.x - p_axis_group_info->delta_pos.trans.x*percent_delta;
+	p_axis_group_info->traj_pos.trans.y = p_axis_group_info->target_pos[0].trans.y - p_axis_group_info->delta_pos.trans.y*percent_delta;
+	p_axis_group_info->traj_pos.trans.z = p_axis_group_info->target_pos[0].trans.z - p_axis_group_info->delta_pos.trans.z*percent_delta;
 
-	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos.roll - p_axis_group_info->delta_pos.roll*percent_delta;
-	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos.pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
-	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos.yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
+	p_axis_group_info->traj_pos.roll = p_axis_group_info->target_pos[0].roll - p_axis_group_info->delta_pos.roll*percent_delta;
+	p_axis_group_info->traj_pos.pitch = p_axis_group_info->target_pos[0].pitch - p_axis_group_info->delta_pos.pitch*percent_delta;
+	p_axis_group_info->traj_pos.yaw = p_axis_group_info->target_pos[0].yaw - p_axis_group_info->delta_pos.yaw*percent_delta;
 
 	return 0;
 
@@ -298,3 +299,4 @@ static char cartesian_line_pause_handle_unit(AXIS_GROUP_INFO *p_axis_group_info,
 {
 	return 0;
 }
+
