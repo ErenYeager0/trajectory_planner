@@ -81,6 +81,25 @@ int line_path(const VECTOR_3D *p_start, const VECTOR_3D *p_target, VECTOR_3D *p_
 	return 0;
 }
 
+int line_length(const VECTOR_3D *p_start, const VECTOR_3D *p_target,double *p_length)
+{
+	VECTOR_3D delta;
+
+	delta.x = p_target->x - p_start->x;
+	delta.y = p_target->y - p_start->y;
+	delta.z = p_target->z - p_start->z;
+
+	*p_length = sqrt(delta.x*delta.x + delta.y*delta.y + delta.z*delta.z);
+
+	return 0;
+}
+
+int beizier_path_tangent(const VECTOR_3D *p_start, const VECTOR_3D *p_target, double time_delta, VECTOR_3D *p_tangent)
+{
+	p_tangent->x = (p_target->x - p_start->x)/time_delta;
+	p_tangent->y = (p_target->y - p_start->y)/time_delta;
+	p_tangent->z = (p_target->z - p_start->z)/time_delta;
+}
 /****************************************************************************************************/
 // Example B.9 in page 484
 static int factorial(int n);
