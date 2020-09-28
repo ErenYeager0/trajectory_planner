@@ -104,8 +104,8 @@ typedef struct aixs_group_info
 	double max_rot_jerk;
 
 	MATRIX_POSE target_pos[TARGET_POS_MAX]; //mm & du
-	double target_vel; //mm/s && du/s
-	double target_acc; //mm/s^2 du/s^2
+	double target_vel[TARGET_POS_MAX]; //mm/s && du/s
+	double target_acc[TARGET_POS_MAX]; //mm/s^2 du/s^2
 
 	MATRIX_POSE start_pos;
 	double start_vel;

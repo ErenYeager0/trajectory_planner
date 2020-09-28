@@ -125,10 +125,6 @@ void cartesian_line_planner_test_one_seg()
 
 }
 
-void cartesian_line_planner_test_two_seg_contour()
-{
-
-}
 
 static char cartesian_line_init_handle_unit(AXIS_GROUP_INFO *p_axis_group_info)
 {
