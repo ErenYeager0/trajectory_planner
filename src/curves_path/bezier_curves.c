@@ -31,45 +31,70 @@ int get_track_join(const VECTOR_3D *p_start, const VECTOR_3D *p_target, double d
 	printf("join:%f,%f,%f\n", p_join->x,  p_join->y, p_join->z);
 }
 
-int beizier_path_4degree(const VECTOR_3D *p_start, const VECTOR_3D *p_middle, const VECTOR_3D *p_target, double delta, VECTOR_3D *p_trajectory, double u)
+int get_beizier_4degree_param(const VECTOR_3D *p_start, const VECTOR_3D *p_middle, const VECTOR_3D *p_target, double delta, VECTOR_3D *p_param)
 {
 	VECTOR_3D first_join, second_join;
-	static VECTOR_3D a0,a1,a2,a3,a4;
-	static int init_flag = 0;
 
-	if (init_flag == 0)
-	{
-		init_flag = 1;
-		get_track_join(p_middle, p_start, delta, &first_join);
-		get_track_join(p_middle, p_target, delta, &second_join);
+	get_track_join(p_middle, p_start, delta, &first_join);
+	get_track_join(p_middle, p_target, delta, &second_join);
 
-		a0.x = p_start->x;
-		a0.y = p_start->y;
-		a0.z = p_start->z;
+	p_param[0].x = p_start->x;
+	p_param[0].y = p_start->y;
+	p_param[0].z = p_start->z;
 
-		a1.x = -4*p_start->x+4*first_join.x;
-		a1.y = -4*p_start->y+4*first_join.y;
-		a1.z = -4*p_start->z+4*first_join.z;
+	p_param[1].x = -4*p_start->x+4*first_join.x;
+	p_param[1].y = -4*p_start->y+4*first_join.y;
+	p_param[1].z = -4*p_start->z+4*first_join.z;
 
-		a2.x = 6*p_start->x-12*first_join.x+6*p_middle->x;
-		a2.y = 6*p_start->y-12*first_join.y+6*p_middle->y;
-		a2.z = 6*p_start->z-12*first_join.z+6*p_middle->z;
+	p_param[2].x = 6*p_start->x-12*first_join.x+6*p_middle->x;
+	p_param[2].y = 6*p_start->y-12*first_join.y+6*p_middle->y;
+	p_param[2].z = 6*p_start->z-12*first_join.z+6*p_middle->z;
 
-		a3.x = -4*p_start->x+12*first_join.x-12*p_middle->x+4*second_join.x;
-		a3.y = -4*p_start->y+12*first_join.y-12*p_middle->y+4*second_join.y;
-		a3.z = -4*p_start->z+12*first_join.z-12*p_middle->z+4*second_join.z;
+	p_param[3].x = -4*p_start->x+12*first_join.x-12*p_middle->x+4*second_join.x;
+	p_param[3].y = -4*p_start->y+12*first_join.y-12*p_middle->y+4*second_join.y;
+	p_param[3].z = -4*p_start->z+12*first_join.z-12*p_middle->z+4*second_join.z;
 
-		//the book about this equation is wrong
-		a4.x = p_start->x-4*first_join.x+6*p_middle->x-4*second_join.x+p_target->x;
-		a4.y = p_start->y-4*first_join.y+6*p_middle->y-4*second_join.y+p_target->y;
-		a4.z = p_start->z-4*first_join.z+6*p_middle->z-4*second_join.z+p_target->z;
-	}
+	//the book about this equation is wrong
+	p_param[4].x = p_start->x-4*first_join.x+6*p_middle->x-4*second_join.x+p_target->x;
+	p_param[4].y = p_start->y-4*first_join.y+6*p_middle->y-4*second_join.y+p_target->y;
+	p_param[4].z = p_start->z-4*first_join.z+6*p_middle->z-4*second_join.z+p_target->z;
+}
 
-	p_trajectory->x = a0.x + a1.x*u+ a2.x*pow(u,2)+a3.x*pow(u,3)+a4.x*pow(u,4);
-	p_trajectory->y = a0.y + a1.y*u+ a2.y*pow(u,2)+a3.y*pow(u,3)+a4.y*pow(u,4);
-	p_trajectory->z = a0.z + a1.z*u+ a2.z*pow(u,2)+a3.z*pow(u,3)+a4.z*pow(u,4);
+int beizier_4degree_path( const VECTOR_3D *p_param, double u, VECTOR_3D *p_trajectory)
+{
+	p_trajectory->x = p_param[0].x + p_param[1].x*u+ p_param[2].x*pow(u,2)+p_param[3].x*pow(u,3)+p_param[4].x*pow(u,4);
+	p_trajectory->y = p_param[0].y + p_param[1].y*u+ p_param[2].y*pow(u,2)+p_param[3].y*pow(u,3)+p_param[4].y*pow(u,4);
+	p_trajectory->z = p_param[0].z + p_param[1].z*u+ p_param[2].z*pow(u,2)+p_param[3].z*pow(u,3)+p_param[4].z*pow(u,4);
 
 	return 0;
+}
+
+/*
+ *  from <A Primer on Bezier Curves> --> arc length
+ *  and <Gaussian Quadrature Weights and Abscissae>
+ *
+ * */
+static int get_bezier_4degree_seg(const VECTOR_3D *p_param, double u, double *p_len);
+int get_bezier_path_4degree_length(const VECTOR_3D *p_param, int n, double *p_curve_len)
+{
+
+	double u;
+	double len_seg[100];
+
+	switch (n)
+	{
+		case 2:
+			u = 1.0/2*(-1)/sqrt(3) + 1.0/2;
+			get_bezier_4degree_seg(p_param, u, len_seg);
+			u = 1.0/2/sqrt(3) + 1.0/2;
+			get_bezier_4degree_seg(p_param, u, len_seg + 1);
+			*p_curve_len = 0.5*(len_seg[0] + len_seg[1]);
+			break;
+		default:
+			break;
+	}
+
+
 }
 
 int line_path(const VECTOR_3D *p_start, const VECTOR_3D *p_target, VECTOR_3D *p_trajectory, double u)
@@ -81,7 +106,7 @@ int line_path(const VECTOR_3D *p_start, const VECTOR_3D *p_target, VECTOR_3D *p_
 	return 0;
 }
 
-int line_length(const VECTOR_3D *p_start, const VECTOR_3D *p_target,double *p_length)
+int get_line_length(const VECTOR_3D *p_start, const VECTOR_3D *p_target,double *p_length)
 {
 	VECTOR_3D delta;
 
@@ -94,12 +119,18 @@ int line_length(const VECTOR_3D *p_start, const VECTOR_3D *p_target,double *p_le
 	return 0;
 }
 
-int beizier_path_tangent(const VECTOR_3D *p_start, const VECTOR_3D *p_target, double time_delta, VECTOR_3D *p_tangent)
+static int get_bezier_4degree_seg(const VECTOR_3D *p_param, double u, double *p_len)
 {
-	p_tangent->x = (p_target->x - p_start->x)/time_delta;
-	p_tangent->y = (p_target->y - p_start->y)/time_delta;
-	p_tangent->z = (p_target->z - p_start->z)/time_delta;
+	VECTOR_3D path_dot;
+
+	path_dot.x = p_param[1].x + 2*p_param[2].x*u + 3*p_param[3].x*pow(u,2) + 4*p_param[4].x*pow(u,3);
+	path_dot.y = p_param[1].y + 2*p_param[2].y*u + 3*p_param[3].y*pow(u,2) + 4*p_param[4].y*pow(u,3);
+	path_dot.z = p_param[1].z + 2*p_param[2].z*u + 3*p_param[3].z*pow(u,2) + 4*p_param[4].z*pow(u,3);
+
+	*p_len = sqrt(pow(path_dot.x, 2) + pow(path_dot.y, 2) + pow(path_dot.z, 2));
 }
+
+
 /****************************************************************************************************/
 // Example B.9 in page 484
 static int factorial(int n);
@@ -136,7 +167,6 @@ void bezier_curves_test()
 		printf("%d,%f,%f\n", i, curve_traject.x, curve_traject.y);
 	}
 }
-
 
 /*
  * m£º m-th degree Bernstein polynomials
